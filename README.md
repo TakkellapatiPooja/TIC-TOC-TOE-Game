@@ -1,206 +1,52 @@
-# TIC-TOC-TOE-Game
-A classic Tic Tac Toe game built using HTML, CSS, and JavaScript. It features an interactive UI, smooth gameplay, and real-time win/draw detection. A fun project to understand DOM manipulation and game logic.
-code:
-<!DOCTYPE html>
-<html>
-<head>
-<title>Tic Tac Toe vs Computer</title>
+# Tic Tac Toe — Player vs Computer
 
-<style>
-body {
-    font-family: Arial;
-    text-align: center;
-    background: #853d3d;
-}
+A browser-based Tic Tac Toe game made with **HTML, CSS, and vanilla JavaScript**. Play as **X** against a computer that chooses randomly from the available cells.
 
-.board {
-    display: grid;
-    grid-template-columns: repeat(3, 100px);
-    gap: 10px;
-    justify-content: center;
-    margin-top: 30px;
-}
+## Features
 
-button.cell {
-    width: 100px;
-    height: 100px;
-    font-size: 36px;
-    cursor: pointer;
-}
+- Interactive 3 × 3 game board
+- Player-versus-computer gameplay
+- Win and draw detection
+- Computer moves after a short delay
+- Win celebration overlay and animated effects
+- Reset button to start another round
 
-#status {
-    margin-top: 20px;
-    font-size: 20px;
-    font-weight: bold;
-}
+## Built With
 
-.reset {
-    margin-top: 15px;
-    padding: 8px 18px;
-}
+- **HTML5** — game board and status display
+- **CSS3** — board layout, overlay, and animations
+- **JavaScript (ES6)** — moves, win checks, and game state
 
-/* Celebration Overlay */
-.overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.85);
-    color: white;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-}
+## Run Locally
 
-.overlay h2 {
-    font-size: 42px;
-    animation: pop 0.8s ease-in-out infinite alternate;
-}
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/TakkellapatiPooja/TIC-TOC-TOE-Game.git
+   ```
+2. Open the project folder.
+3. Open the HTML file in a web browser, or use Visual Studio Code with the Live Server extension.
 
-/* Fireworks dots */
-.spark {
-    position: absolute;
-    width: 6px;
-    height: 6px;
-    background: gold;
-    border-radius: 50%;
-    animation: sparkle 1.2s infinite;
-}
+No package installation or build step is required.
 
-@keyframes sparkle {
-    0% { transform: scale(0); opacity: 1; }
-    100% { transform: scale(2); opacity: 0; }
-}
+## How to Play
 
-@keyframes pop {
-    from { transform: scale(1); }
-    to { transform: scale(1.1); }
-}
-</style>
-</head>
+1. You play as **X**; the computer plays as **O**.
+2. Select an empty cell to make your move.
+3. Get three of your symbols in a row, column, or diagonal to win.
+4. If all cells are filled without a winner, the game is a draw.
+5. Select **Reset Game** to play again.
 
-<body>
+## Screenshot
 
-<h1>Tic Tac Toe</h1>
-<p>You = X | Computer = O</p>
+![Tic Tac Toe gameplay](https://github.com/user-attachments/assets/c01cddcf-da7e-4e8a-b935-9196b371ad28)
 
-<div class="board">
-    <button class="cell" onclick="playerMove(0)"></button>
-    <button class="cell" onclick="playerMove(1)"></button>
-    <button class="cell" onclick="playerMove(2)"></button>
-    <button class="cell" onclick="playerMove(3)"></button>
-    <button class="cell" onclick="playerMove(4)"></button>
-    <button class="cell" onclick="playerMove(5)"></button>
-    <button class="cell" onclick="playerMove(6)"></button>
-    <button class="cell" onclick="playerMove(7)"></button>
-    <button class="cell" onclick="playerMove(8)"></button>
-</div>
+## Possible Improvements
 
-<div id="status">Your Turn</div>
-<button class="reset" onclick="resetGame()">Reset Game</button>
+- Make the computer smarter with a minimax strategy
+- Add a two-player mode
+- Improve keyboard navigation and mobile layout
+- Add tests for win, draw, and reset scenarios
 
-<div class="overlay" id="overlay">
-    <h2 id="message"></h2>
-</div>
+## License
 
-<script>
-let board = ["","","","","","","","",""];
-let gameOver = false;
-
-function playerMove(index) {
-    if (board[index] !== "" || gameOver) return;
-
-    board[index] = "X";
-    updateBoard();
-
-    if (checkWinner("X")) {
-        showWinMessage();
-        gameOver = true;
-        return;
-    }
-
-    if (!board.includes("")) {
-        document.getElementById("status").innerText = "It's a Draw!";
-        gameOver = true;
-        return;
-    }
-
-    document.getElementById("status").innerText = "Computer Thinking...";
-    setTimeout(computerMove, 500);
-}
-
-function computerMove() {
-    let empty = board.map((v,i) => v=="" ? i : null).filter(v=>v!==null);
-    let move = empty[Math.floor(Math.random() * empty.length)];
-    board[move] = "O";
-    updateBoard();
-
-    if (checkWinner("O")) {
-        showLoseMessage();
-        gameOver = true;
-        return;
-    }
-
-    if (!board.includes("")) {
-        document.getElementById("status").innerText = "It's a Draw!";
-        gameOver = true;
-        return;
-    }
-
-    document.getElementById("status").innerText = "Your Turn";
-}
-
-function updateBoard() {
-    document.querySelectorAll(".cell").forEach((btn,i)=>{
-        btn.innerText = board[i];
-    });
-}
-
-function checkWinner(p) {
-    const wins = [
-        [0,1,2],[3,4,5],[6,7,8],
-        [0,3,6],[1,4,7],[2,5,8],
-        [0,4,8],[2,4,6]
-    ];
-    return wins.some(w => w.every(i => board[i] === p));
-}
-
-/* WIN animation */
-function showWinMessage() {
-    const overlay = document.getElementById("overlay");
-    document.getElementById("message").innerText = "You Won 🎊";
-    overlay.style.display = "flex";
-
-    for (let i=0;i<25;i++) {
-        let s = document.createElement("div");
-        s.className = "spark";
-        s.style.top = Math.random()*100 + "%";
-        s.style.left = Math.random()*100 + "%";
-        overlay.appendChild(s);
-    }
-}
-
-/* LOSE message */
-function showLoseMessage() {
-    document.getElementById("status").innerText = "Try Again 🐥";
-}
-
-function resetGame() {
-    board = ["","","","","","","","",""];
-    gameOver = false;
-    document.getElementById("status").innerText = "Your Turn";
-    updateBoard();
-    const overlay = document.getElementById("overlay");
-    overlay.style.display = "none";
-    overlay.innerHTML = '<h2 id="message"></h2>';
-}
-</script>
-
-</body>
-</html>
-Pictures:
-<img width="1147" height="821" alt="image" src="https://github.com/user-attachments/assets/c01cddcf-da7e-4e8a-b935-9196b371ad28" />
-<img width="1172" height="831" alt="image" src="https://github.com/user-attachments/assets/a356d111-9d29-41d5-af9f-d188170988d2" />
-<img width="1243" height="748" alt="image" src="https://github.com/user-attachments/assets/90ed3852-13d3-4113-8960-65bf01132146" />
-
-
-
+No license has been specified yet. Please contact the repository owner before reusing this project.
